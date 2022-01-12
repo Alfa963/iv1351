@@ -55,6 +55,17 @@ SELECT * from (SELECT COUNT(*) as number_of_lessons,instructor_id as instructor,
      GROUP BY instructor_id, lesson_type
      ORDER BY number_of_lessons desc)
      as instructor WHERE number_of_lessons > 4;
+
+
+CREATE MATERIALIZED VIEW number_of_lessons AS
+	SELECT * from (SELECT COUNT(*) as number_of_lessons,instructor_id as instructor, lesson_type from lesson
+   	 WHERE to_char(date, 'YYYY-MM')
+   	  = to_char(current_date, 'YYYY-MM')
+   	  GROUP BY instructor_id, lesson_type
+   	  ORDER BY number_of_lessons desc)
+   	  as instructor WHERE number_of_lessons > 4;
+
+
 ------------------------------------
 ---List all ensembles held during the next week, sorted by music genre and weekday. 
 --For each ensemble tell whether it's full booked, has 1-2 seats left or has more seats left. --
@@ -72,3 +83,77 @@ SELECT lesson.lesson_type AS type, lesson.date AS date_of_lesson , ensemble.genr
 FROM lesson, ensemble, student_ensemble
 WHERE lesson.id = ensemble.lesson_id AND ensemble.lesson_id = student_ensemble.lesson_id AND date_trunc('week', current_date + interval '1 week')=date_trunc('week', date)
 GROUP BY type , date_of_lesson , genre, maximum_number_of_students ;
+
+
+
+--------------------
+
+CREATE MATERIALIZED VIEW number_of_lessons AS
+	SELECT lesson.lesson_type AS type, lesson.date AS date_of_lesson , ensemble.genre AS genre ,
+
+	(CASE 
+	WHEN COUNT (student_ensemble.student_id) = (maximum_number_of_students) THEN 'Fully booked'
+	WHEN COUNT (student_ensemble.student_id) = (maximum_number_of_students - 1) THEN '1 seats left'
+        WHEN COUNT (student_ensemble.student_id) = (maximum_number_of_students - 2) THEN '2 seats left'
+        WHEN COUNT (student_ensemble.student_id) < (maximum_number_of_students - 2) THEN 'Many free seats'
+    END)
+	FROM lesson, ensemble, student_ensemble
+	WHERE lesson.id = ensemble.lesson_id AND ensemble.lesson_id = student_ensemble.lesson_id AND date_trunc('week', current_date + interval '1 week')=date_trunc('week', date)
+	GROUP BY type , date_of_lesson , genre, maximum_number_of_students ;
+
+
+
+
+INSERT INTO lesson (id, level, date, instrument_type, lesson_type, instructor_id) VALUES (162,'advanced', '2022-01-16','gituarr', 'ensembles', 2);
+INSERT INTO lesson (id, level, date, instrument_type, lesson_type, instructor_id ) VALUES (163,'beginner', '2022-01-18','piano', 'ensembles', 2);
+INSERT INTO lesson (id, level, date, instrument_type, lesson_type, instructor_id) VALUES (164,'intermidiate', '2022-01-19','clarinet', 'ensembles', 3);
+INSERT INTO lesson (id, level, date, instrument_type, lesson_type, instructor_id) VALUES (165,'advanced', '2022-01-20','gituarr', 'ensembles',  4);
+INSERT INTO lesson (id, level, date, instrument_type, lesson_type, instructor_id) VALUES (166,'intermidiate', '2022-01-15','clarinet', 'ensembles', 3);
+
+INSERT INTO ensemble (lesson_id,genre, maximum_number_of_students , minimum_number_of_students) VALUES (162,'relax music', 7, 3);
+INSERT INTO ensemble (lesson_id,genre, maximum_number_of_students , minimum_number_of_students) VALUES (163,'rock and roll', 9, 3);
+INSERT INTO ensemble (lesson_id,genre, maximum_number_of_students , minimum_number_of_students) VALUES (164,'flamenco', 11, 3);
+INSERT INTO ensemble (lesson_id,genre, maximum_number_of_students , minimum_number_of_students) VALUES (165,'relax music', 7, 3);
+INSERT INTO ensemble (lesson_id,genre, maximum_number_of_students , minimum_number_of_students) VALUES (166,'rock and roll', 8, 3);
+
+
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (162,1);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (162,2);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (162,3);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (162,4);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (162,5);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (162,6);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (162,7);
+
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (163,8);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (163,9);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (163,10);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (163,11);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (163,12);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (163,13);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (163,14);
+
+
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (164,1);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (164,15);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (164,16);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (164,17);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (164,18);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (164,19);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (164,20);
+
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (165,1);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (165,2);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (165,3);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (165,4);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (165,5);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (165,6);
+
+
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,8);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,9);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,10);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,11);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,12);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,13);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,14);

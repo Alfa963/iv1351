@@ -79,13 +79,7 @@ public class BasicJdbc {
             //svara 1
             int instrument_id = scanner.nextInt();
             int staff_id = 1;
-           // java.sql.Timestamp returndate = java.sql.Timestamp.valueOf("2022-09-23 10:10:10.0");
-            
-   
-            
-            
-            //student_id, rental_start_date, rental_end_date, staff_id, instrument_id
-           // numberRentedInstrumentsStmt.setInt(2,student_id);
+  
             insertRentalStmt.setInt(1, student_id);
             insertRentalStmt.setTimestamp(2, nowDate());
             insertRentalStmt.setTimestamp(3, getReturnDate());
@@ -199,10 +193,7 @@ public class BasicJdbc {
           statement = false;
         }
       }
-      if(statement) {
-        insertRentalStmt.executeUpdate();
-        connection.commit();
-      }
+   
     } catch (SQLException e) {
       e.printStackTrace();
       connection.rollback();
@@ -218,7 +209,8 @@ public class BasicJdbc {
       terminateRentalStmt.executeUpdate();
       connection.commit();
       System.out.println("Specific rental terminated");
-    } catch(SQLException e) {
+    } 
+    catch(SQLException e) {
       e.printStackTrace();
       connection.rollback();
     }

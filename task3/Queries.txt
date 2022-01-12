@@ -110,6 +110,20 @@ INSERT INTO lesson (id, level, date, instrument_type, lesson_type, instructor_id
 INSERT INTO lesson (id, level, date, instrument_type, lesson_type, instructor_id) VALUES (165,'advanced', '2022-01-20','gituarr', 'ensembles',  4);
 INSERT INTO lesson (id, level, date, instrument_type, lesson_type, instructor_id) VALUES (166,'intermidiate', '2022-01-15','clarinet', 'ensembles', 3);
 
+
+INSERT INTO lesson (id, level, date, instrument_type, lesson_type, instructor_id) VALUES (167,'intermidiate', '2022-01-21','clarinet', 'ensembles', 3);
+INSERT INTO ensemble (lesson_id,genre, maximum_number_of_students , minimum_number_of_students) VALUES (166,'rock and roll', 8, 3);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,1);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,2);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,3);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,4);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,5);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,6);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,7);
+INSERT INTO student_ensemble(lesson_id,student_id) VALUES (166,8);
+
+
+
 INSERT INTO ensemble (lesson_id,genre, maximum_number_of_students , minimum_number_of_students) VALUES (162,'relax music', 7, 3);
 INSERT INTO ensemble (lesson_id,genre, maximum_number_of_students , minimum_number_of_students) VALUES (163,'rock and roll', 9, 3);
 INSERT INTO ensemble (lesson_id,genre, maximum_number_of_students , minimum_number_of_students) VALUES (164,'flamenco', 11, 3);
